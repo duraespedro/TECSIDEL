@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento Free Flow</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background: #007bff; 
+            color: #333; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: #fff;
+        }
+        .container { 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            width: 80%; 
+            max-width: 1200px; 
+            transition: all 0.3s ease-in-out; 
+            color: #333; 
+        }
+        .container:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2); 
+        }
+        h1, h2 { 
+            color: #007bff; 
+            margin-bottom: 20px; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .table { 
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+        .table th { 
+            background: #007bff; 
+            color: #fff; 
+        }
+        .status-indicator { 
+            display: inline-block; 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            margin-right: 5px; 
+        }
+        .status-online { 
+            background: #28a745; 
+        }
+        .status-offline { 
+            background: #dc3545; 
+        }
+        .vehicle-card { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            width: calc(50% - 10px); 
+            box-sizing: border-box; 
+            transition: all 0.3s ease-in-out; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .vehicle-card:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        }
+        #vehicleInfo { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+        }
+        .vehicle-info-label { 
+            font-weight: bold; 
+        }
+        #chartContainer { 
+            height: 370px; 
+            width: 100%; 
+            margin-top: 20px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monitoramento Free Flow</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Status dos Equipamentos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Equipamento</th>
+                            <th>Status</th>
+                            <th>Última Atualização</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipmentTableBody">
+                        <tr>
+                            <td>Câmera 1</td>
+                            <td><span class="status-indicator status-online"></span> Online</td>
+                            <td>18/05/2024 14:32</td>
+                        </tr>
+                        <tr>
+                            <td>Antena 1</td>
+                            <td><span class="status-indicator status-offline"></span> Offline</td>
+                            <td>18/05/2024 14:28</td>
+                        </tr>
+                        <tr>
+                            <td>Sensor 1</td>
+                            <td><span class="status-indicator status-online"></span> Online</td>
+                            <td>18/05/2024 14:35</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <h2>Informações dos Veículos</h2>
+                <div id="vehicleInfo">
+                    <div class="vehicle-card">
+                        <p><span class="vehicle-info-label">Placa:</span> ABC-1234</p>
+                        <p><span class="vehicle-info-label">Tipo:</span> Carro</p>
+                        <p><span class="vehicle-info-label">Data/Hora:</span> 18/05/2024 14:32</p>
+                    </div>
+                    <div class="vehicle-card">
+                        <p><span class="vehicle-info-label">Placa:</span> XYZ-5678</p>
+                        <p><span class="vehicle-info-label">Tipo:</span> Caminhão</p>
+                        <p><span class="vehicle-info-label">Data/Hora:</span> 18/05/2024 14:35</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chartContainer"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        // Dados estáticos para o gráfico
+        const chartData = [
+            { x: new Date().getTime(), y: 10 },
+            { x: new Date().getTime() + 1000, y: 15 },
+            { x: new Date().getTime() + 2000, y: 12 },
+            { x: new Date().getTime() + 3000, y: 20 },
+            { x: new Date().getTime() + 4000, y: 18 },
+        ];
+
+        const chartOptions = {
+            chart: {
+                type: 'line',
+                height: 370
+            },
+            series: [{
+                name: 'Fluxo de Veículos',
+                data: chartData
+            }],
+            xaxis: {
+                type: 'datetime'
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#chartContainer"), chartOptions);
+        chart.render();
+    </script>
+</body>
+</html>
